@@ -1,0 +1,3 @@
+ https://www.googleapis.com/books/v1/volumes?q=macedonia
+a) Use the provided URL to fetch JSON data.
+b) Display the fetched list containing the book title and description only.

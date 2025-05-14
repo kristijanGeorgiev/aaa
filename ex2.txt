@@ -1,0 +1,8 @@
+Create app with the following interface: 
+a) Text
+b) FloatingActionButton
+Tasks:
+a) Counter is of type integer and has initial value 0.
+b) Use SharedPreferences to persist the state of the counter.
+c) On FloatingActionButton press increment the counter.
+d) Text shows counter value retrieved from SharedPreferences
