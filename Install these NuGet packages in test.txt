@@ -1,0 +1,7 @@
+Install these NuGet packages in your test project (HotelRoomManagement.Tests):
+
+Install-Package xunit
+Install-Package Moq
+Install-Package AutoMapper.Extensions.Microsoft.DependencyInjection
+Install-Package Microsoft.NET.Test.Sdk
+Install-Package FluentAssertions
