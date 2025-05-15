@@ -1,33 +1,50 @@
-public class GuestRepository : IGuestRepository
+using HotelRoomManagement.Infrastructure.Data;
+using HotelRoomManagement.Infrastructure.Entities;
+using HotelRoomManagement.Infrastructure.Interfaces;
+using Microsoft.EntityFrameworkCore;
+
+namespace HotelRoomManagement.Infrastructure.Repositories
 {
-    private readonly ApplicationDbContext _context;
-
-    public GuestRepository(ApplicationDbContext context) => _context = context;
-
-    public async Task<IEnumerable<Guest>> GetAllAsync() =>
-        await _context.Guests.ToListAsync();
-
-    public async Task<Guest> GetByIdAsync(int id) =>
-        await _context.Guests.FindAsync(id);
-
-    public async Task<Guest> CreateAsync(Guest guest)
+    public class GuestRepository : IGuestRepository
     {
-        _context.Guests.Add(guest);
-        await _context.SaveChangesAsync();
-        return guest;
-    }
+        private readonly ApplicationDbContext _context;
 
-    public async Task<bool> UpdateAsync(Guest guest)
-    {
-        _context.Guests.Update(guest);
-        return await _context.SaveChangesAsync() > 0;
-    }
+        public GuestRepository(ApplicationDbContext context)
+        {
+            _context = context;
+        }
 
-    public async Task<bool> DeleteAsync(int id)
-    {
-        var guest = await _context.Guests.FindAsync(id);
-        if (guest == null) return false;
-        _context.Guests.Remove(guest);
-        return await _context.SaveChangesAsync() > 0;
+        public async Task<IEnumerable<Guest>> GetAllAsync()
+        {
+            return await _context.Guests.Include(g => g.Room).ToListAsync();
+        }
+
+        public async Task<Guest> GetByIdAsync(int id)
+        {
+            return await _context.Guests.Include(g => g.Room).FirstOrDefaultAsync(g => g.Id == id);
+        }
+
+        public async Task<Guest> CreateAsync(Guest guest)
+        {
+            _context.Guests.Add(guest);
+            await _context.SaveChangesAsync();
+            return guest;
+        }
+
+        public async Task<bool> UpdateAsync(Guest guest)
+        {
+            _context.Guests.Update(guest);
+            return await _context.SaveChangesAsync() > 0;
+        }
+
+        public async Task<bool> DeleteAsync(int id)
+        {
+            var guest = await _context.Guests.FindAsync(id);
+            if (guest == null)
+                return false;
+
+            _context.Guests.Remove(guest);
+            return await _context.SaveChangesAsync() > 0;
+        }
     }
 }
