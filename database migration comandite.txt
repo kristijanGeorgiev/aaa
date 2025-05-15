@@ -1,2 +1,0 @@
-Add-Migration InitialCreate -Project HotelRoomManagement.Infrastructure -StartupProject HotelRoomManagement.API
-Update-Database
