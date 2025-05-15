@@ -1,0 +1,8 @@
+public interface IGuestService
+{
+    Task<IEnumerable<GuestDto>> GetAllAsync();
+    Task<GuestDto> GetByIdAsync(int id);
+    Task<GuestDto> CreateAsync(GuestDto guest);
+    Task<bool> UpdateAsync(int id, GuestDto guest);
+    Task<bool> DeleteAsync(int id);
+}

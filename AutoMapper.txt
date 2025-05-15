@@ -1,0 +1,18 @@
+using AutoMapper;
+using HotelRoomManagement.Application.DTOs;
+using HotelRoomManagement.Infrastructure.Entities;
+
+namespace HotelRoomManagement.Application.Mappings
+{
+    public class MappingProfile : Profile
+    {
+        public MappingProfile()
+        {
+            // Guest Mapping
+            CreateMap<Guest, GuestDto>().ReverseMap();
+
+            // Room Mapping
+            CreateMap<Room, RoomDto>().ReverseMap();
+        }
+    }
+}

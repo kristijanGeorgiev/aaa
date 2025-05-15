@@ -1,0 +1,51 @@
+using AutoMapper;
+using HotelRoomManagement.Application.DTOs;
+using HotelRoomManagement.Application.Interfaces;
+using HotelRoomManagement.Infrastructure.Entities;
+using HotelRoomManagement.Infrastructure.Interfaces;
+
+namespace HotelRoomManagement.Application.Services
+{
+    public class RoomService : IRoomService
+    {
+        private readonly IRoomRepository _repository;
+        private readonly IMapper _mapper;
+
+        public RoomService(IRoomRepository repository, IMapper mapper)
+        {
+            _repository = repository;
+            _mapper = mapper;
+        }
+
+        public async Task<IEnumerable<RoomDto>> GetAllAsync()
+        {
+            var rooms = await _repository.GetAllAsync();
+            return _mapper.Map<IEnumerable<RoomDto>>(rooms);
+        }
+
+        public async Task<RoomDto> GetByIdAsync(int id)
+        {
+            var room = await _repository.GetByIdAsync(id);
+            return _mapper.Map<RoomDto>(room);
+        }
+
+        public async Task<RoomDto> CreateAsync(RoomDto roomDto)
+        {
+            var room = _mapper.Map<Room>(roomDto);
+            var createdRoom = await _repository.CreateAsync(room);
+            return _mapper.Map<RoomDto>(createdRoom);
+        }
+
+        public async Task<bool> UpdateAsync(int id, RoomDto roomDto)
+        {
+            var room = _mapper.Map<Room>(roomDto);
+            room.Id = id;
+            return await _repository.UpdateAsync(room);
+        }
+
+        public async Task<bool> DeleteAsync(int id)
+        {
+            return await _repository.DeleteAsync(id);
+        }
+    }
+}
