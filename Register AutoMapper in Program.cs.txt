@@ -1,5 +1,0 @@
-Register AutoMapper in Program.cs ----  dodj go ova
-
-using HotelRoomManagement.Application.Mappings;
-
-builder.Services.AddAutoMapper(typeof(MappingProfile));
