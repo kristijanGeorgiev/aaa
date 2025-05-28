@@ -1,0 +1,75 @@
+import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const MaterialApp(
+      title: 'Dark Mode Switch',
+      debugShowCheckedModeBanner: false,
+      home: DarkModeScreen(),
+    );
+  }
+}
+
+class DarkModeScreen extends StatefulWidget {
+  const DarkModeScreen({super.key});
+
+  @override
+  State<DarkModeScreen> createState() => _DarkModeScreenState();
+}
+
+class _DarkModeScreenState extends State<DarkModeScreen> {
+  bool _isDarkMode = true; // Default ON
+
+  @override
+  void initState() {
+    super.initState();
+    _loadDarkMode();
+  }
+
+  Future<void> _loadDarkMode() async {
+    final prefs = await SharedPreferences.getInstance();
+    final savedValue = prefs.getBool('darkMode');
+    setState(() {
+      _isDarkMode = savedValue ?? true; // Default to true (Dark Mode ON)
+    });
+  }
+
+  Future<void> _toggleDarkMode(bool value) async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _isDarkMode = value;
+      prefs.setBool('darkMode', value);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Theme Toggle')),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              _isDarkMode ? 'Dark Mode Active' : 'Light Mode Active',
+              style: const TextStyle(fontSize: 24),
+            ),
+            const SizedBox(height: 16),
+            Switch(
+              value: _isDarkMode,
+              onChanged: _toggleDarkMode,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
