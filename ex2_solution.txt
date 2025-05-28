@@ -1,0 +1,131 @@
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const MaterialApp(
+      title: 'Profile Form',
+      debugShowCheckedModeBanner: false,
+      home: ProfileFormScreen(),
+    );
+  }
+}
+
+class ProfileFormScreen extends StatefulWidget {
+  const ProfileFormScreen({super.key});
+
+  @override
+  State<ProfileFormScreen> createState() => _ProfileFormScreenState();
+}
+
+class _ProfileFormScreenState extends State<ProfileFormScreen> {
+  final _formKey = GlobalKey<FormState>();
+  final _usernameController = TextEditingController();
+  final _phoneController = TextEditingController();
+  final _ageController = TextEditingController();
+
+  String? _validateUsername(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Enter username';
+    }
+    if (value.length < 4 || value.length > 10) {
+      return 'Username must be 4-10 characters';
+    }
+    final regex = RegExp(r'^[A-Za-z][A-Za-z_]{3,9}$');
+    if (!regex.hasMatch(value)) {
+      return 'Username must start with a letter and contain no numbers';
+    }
+    return null;
+  }
+
+  String? _validatePhone(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Enter phone number';
+    }
+    if (!RegExp(r'^389\d{8}$').hasMatch(value)) {
+      return 'Phone must start with 389 and be exactly 11 digits';
+    }
+    return null;
+  }
+
+  String? _validateAge(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Enter age';
+    }
+    if (value.startsWith('0')) {
+      return 'Age cannot start with 0';
+    }
+    final age = int.tryParse(value);
+    if (age == null || age < 18 || age > 99) {
+      return 'Age must be between 18 and 99';
+    }
+    return null;
+  }
+
+  void _submitForm() {
+    if (_formKey.currentState!.validate()) {
+      final username = _usernameController.text;
+      showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+          title: const Text('Success'),
+          content: Text('Profile saved for $username'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('OK'),
+            ),
+          ],
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Check input fields for errors!')),
+      );
+    }
+  }
+
+  @override
+  void dispose() {
+    _usernameController.dispose();
+    _phoneController.dispose();
+    _ageController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Profile Form')),
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              // Username
+              TextFormField(
+                controller: _usernameController,
+                decoration: const InputDecoration(labelText: 'Username'),
+                validator: _validateUsername,
+              ),
+              const SizedBox(height: 16),
+              // Phone
+              TextFormField(
+                controller: _phoneController,
+                decoration: const InputDecoration(labelText: 'Phone Number'),
+                keyboardType: TextInputType.phone,
+                validator: _validatePhone,
+              ),
+              const SizedBox(height: 16),
+              // Age
+              TextFormField(
+                controller: _ageController,
+                decoration: const InputDecoration(labelText: 'Age'),
+                keyboardType: TextInputType.number,
