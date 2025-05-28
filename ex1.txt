@@ -1,9 +1,0 @@
-create app with the following interface:
-a) Text
-b) Switch
-Tasks:
-a) Text shows "Dark Mode Active" when the switch is on, and "Light Mode Active" when the switch is off
-b) Switch toggles the value, and the text must update immediately
-c) Save the switch state to SharedPreferences
-On app lauch, retrieve save value and update the switch and next accordingly
-If nothing is stored yet, the app should default to Dark Mode ON, not off
