@@ -1,0 +1,121 @@
+// ---------------------- UNIT TESTS ----------------------
+// File: Tests/Helpers/AutoMapperHelper.cs
+using AutoMapper;
+using CarRental.Application.Mappings;
+
+public static class AutoMapperHelper
+{
+    public static IMapper GetMapper()
+    {
+        var config = new MapperConfiguration(cfg => cfg.AddProfile<MappingProfile>());
+        return config.CreateMapper();
+    }
+}
+
+// File: Tests/Services/ClientServiceTests.cs
+using Xunit;
+using Moq;
+using FluentAssertions;
+using CarRental.Application.Services;
+using CarRental.Infrastructure.Interfaces;
+using CarRental.Domain.Entities;
+using CarRental.Application.DTOs;
+
+public class ClientServiceTests
+{
+    private readonly Mock<IClientRepository> _repoMock;
+    private readonly ClientService _service;
+
+    public ClientServiceTests()
+    {
+        _repoMock = new Mock<IClientRepository>();
+        _service = new ClientService(_repoMock.Object, AutoMapperHelper.GetMapper());
+    }
+
+    [Fact]
+    public async Task GetByIdAsync_ReturnsClient()
+    {
+        _repoMock.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(new Client { Id = 1, FirstName = "John", LastName = "Doe", DOB = DateTime.Now.AddYears(-30), Address = "Test", Nationality = "Test", RentalStartDate = DateTime.Today, RentalEndDate = DateTime.Today.AddDays(3), CarId = 1 });
+
+        var result = await _service.GetByIdAsync(1);
+
+        result.FirstName.Should().Be("John");
+    }
+
+    [Fact]
+    public async Task CreateAsync_ReturnsCreatedClient()
+    {
+        var dto = new ClientDto { FirstName = "Alice", LastName = "Smith", DOB = DateTime.Now.AddYears(-25), Address = "Main St", Nationality = "UK", RentalStartDate = DateTime.Today, RentalEndDate = DateTime.Today.AddDays(2), CarId = 1 };
+
+        _repoMock.Setup(r => r.CreateAsync(It.IsAny<Client>())).ReturnsAsync(new Client { Id = 1, FirstName = dto.FirstName, LastName = dto.LastName });
+
+        var result = await _service.CreateAsync(dto);
+
+        result.Id.Should().Be(1);
+        result.FirstName.Should().Be("Alice");
+    }
+
+    [Fact]
+    public async Task DeleteAsync_ReturnsTrue()
+    {
+        _repoMock.Setup(r => r.DeleteAsync(1)).ReturnsAsync(true);
+
+        var result = await _service.DeleteAsync(1);
+
+        result.Should().BeTrue();
+    }
+}
+
+// File: Tests/Services/CarServiceTests.cs
+using Xunit;
+using Moq;
+using FluentAssertions;
+using CarRental.Application.Services;
+using CarRental.Infrastructure.Interfaces;
+using CarRental.Domain.Entities;
+using CarRental.Application.DTOs;
+
+public class CarServiceTests
+{
+    private readonly Mock<ICarRepository> _repoMock;
+    private readonly CarService _service;
+
+    public CarServiceTests()
+    {
+        _repoMock = new Mock<ICarRepository>();
+        _service = new CarService(_repoMock.Object, AutoMapperHelper.GetMapper());
+    }
+
+    [Fact]
+    public async Task GetAllAsync_ReturnsListOfCars()
+    {
+        _repoMock.Setup(r => r.GetAllAsync()).ReturnsAsync(new List<Car> { new Car { Id = 1, LicensePlate = "ABC123", Model = "Model S", Manufacturer = "Tesla", Year = 2020 } });
+
+        var result = await _service.GetAllAsync();
+
+        result.Should().HaveCount(1);
+    }
+
+    [Fact]
+    public async Task CreateAsync_ReturnsCreatedCar()
+    {
+        var dto = new CarDto { LicensePlate = "XYZ789", Model = "Civic", Manufacturer = "Honda", Year = 2018 };
+
+        _repoMock.Setup(r => r.CreateAsync(It.IsAny<Car>())).ReturnsAsync(new Car { Id = 2, LicensePlate = dto.LicensePlate });
+
+        var result = await _service.CreateAsync(dto);
+
+        result.Id.Should().Be(2);
+        result.LicensePlate.Should().Be("XYZ789");
+    }
+
+    [Fact]
+    public async Task DeleteAsync_ReturnsTrue()
+    {
+        _repoMock.Setup(r => r.DeleteAsync(1)).ReturnsAsync(true);
+
+        var result = await _service.DeleteAsync(1);
+
+        result.Should().BeTrue();
+    }
+}
