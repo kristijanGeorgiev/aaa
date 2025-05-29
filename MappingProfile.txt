@@ -1,0 +1,13 @@
+// File: Application/Mappings/MappingProfile.cs
+using AutoMapper;
+using CarRental.Application.DTOs;
+using CarRental.Domain.Entities;
+
+public class MappingProfile : Profile
+{
+    public MappingProfile()
+    {
+        CreateMap<Client, ClientDto>().ReverseMap();
+        CreateMap<Car, CarDto>().ReverseMap();
+    }
+}
