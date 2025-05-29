@@ -1,0 +1,22 @@
+// File: Domain/Entities/Car.cs
+namespace CarRental.Domain.Entities
+{
+    public class Car
+    {
+        public int Id { get; set; }
+
+        [Required]
+        public string LicensePlate { get; set; } = null!;
+
+        [Required]
+        public string Model { get; set; } = null!;
+
+        [Required]
+        public string Manufacturer { get; set; } = null!;
+
+        [Required]
+        public int Year { get; set; }
+
+        public ICollection<Client> Clients { get; set; } = new List<Client>();
+    }
+}
