@@ -1,9 +1,0 @@
-// File: Application/Interfaces/ICarService.cs
-public interface ICarService
-{
-    Task<IEnumerable<CarDto>> GetAllAsync();
-    Task<CarDto> GetByIdAsync(int id);
-    Task<CarDto> CreateAsync(CarDto dto);
-    Task<bool> UpdateAsync(int id, CarDto dto);
-    Task<bool> DeleteAsync(int id);
-}
